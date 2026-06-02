@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import Footer from '../../src/components/footer'
+import { CONTACT_EMAIL, MAILING_ADDRESS } from '../../src/lib/organization'
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations)
@@ -54,9 +55,8 @@ describe('Footer component', () => {
 
   it('should have email contact link', () => {
     render(<Footer />)
-    const links = screen.getAllByRole('link')
-    const emailLink = links.find((link) => link.getAttribute('href')?.includes('mailto:'))
-    expect(emailLink).toBeDefined()
+    const emailLink = screen.getByRole('link', { name: CONTACT_EMAIL })
+    expect(emailLink).toHaveAttribute('href', `mailto:${CONTACT_EMAIL}`)
   })
 
   it('should display the EIN number', () => {
@@ -101,10 +101,17 @@ describe('Footer component', () => {
     )
   })
 
-  it('should have Google Maps link for main address', () => {
+  it('should have Google Maps link for mailing address', () => {
     render(<Footer />)
-    expect(screen.getByLabelText('Open main address in Google Maps')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Open PA office address in Google Maps')).not.toBeInTheDocument()
+    const mapsLink = screen.getByLabelText('Open mailing address in Google Maps')
+    expect(mapsLink).toBeInTheDocument()
+    expect(mapsLink).toHaveAttribute(
+      'href',
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAILING_ADDRESS)}`
+    )
+    const addressText = mapsLink.querySelector('#aria-font')
+    expect(addressText?.textContent).toContain('PO Box 103')
+    expect(addressText?.textContent).toContain('East Meadow, NY 11554')
   })
 
   it('should display freeforcharity.org link in copyright bar', () => {
