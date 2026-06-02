@@ -60,10 +60,7 @@ describe('Header component', () => {
 
   it('should display all expected navigation items', () => {
     render(<Header />)
-    const navItems = ['Home', 'Team']
-    for (const item of navItems) {
-      expect(screen.getAllByText(item).length).toBeGreaterThanOrEqual(1)
-    }
+    expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1)
   })
 
   it('should have a search button with correct aria-label', () => {
@@ -142,29 +139,6 @@ describe('Header component', () => {
 
     // After clicking a link, menu should close (button reverts to Open menu)
     expect(screen.getByLabelText('Open menu')).toBeInTheDocument()
-  })
-
-  it('should highlight active section based on scroll spy', () => {
-    // Create a mock team section element
-    const teamSection = document.createElement('div')
-    teamSection.id = 'team'
-    Object.defineProperty(teamSection, 'offsetTop', { value: 200, configurable: true })
-    Object.defineProperty(teamSection, 'offsetHeight', { value: 500, configurable: true })
-    document.body.appendChild(teamSection)
-
-    render(<Header />)
-
-    // Scroll into the team section
-    Object.defineProperty(window, 'scrollY', { value: 250, writable: true })
-    fireEvent.scroll(window)
-
-    // The Team link should be styled as active (text-blue-600)
-    const teamLinks = screen.getAllByText('Team')
-    const activeTeamLink = teamLinks.find((link) => link.className.includes('text-blue-600'))
-    expect(activeTeamLink).toBeDefined()
-
-    // Clean up
-    document.body.removeChild(teamSection)
   })
 
   it('should set Home as active when scrolled to top', () => {

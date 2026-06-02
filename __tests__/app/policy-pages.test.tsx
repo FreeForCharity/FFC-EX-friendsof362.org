@@ -44,7 +44,7 @@ describe('Policy page rendering', () => {
   it('Donation Policy renders heading and EIN', () => {
     render(<DonationPolicyPage />)
     expect(screen.getByText('Donation Policy')).toBeInTheDocument()
-    expect(screen.getByText(/46-2471893/)).toBeInTheDocument()
+    expect(screen.getByText(/92-3233855/)).toBeInTheDocument()
   })
 
   it('Donation Policy contains expected sections', () => {

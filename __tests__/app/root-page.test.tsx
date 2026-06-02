@@ -1,14 +1,8 @@
 import React from 'react'
-import { render } from '@testing-library/react'
-
-// Mock the home-page module since it renders the team section
-jest.mock('../../src/app/home-page', () => {
-  return function MockHomePage() {
-    return <div data-testid="home-page">Home Page Content</div>
-  }
-})
+import { render, screen } from '@testing-library/react'
 
 import RootPage from '../../src/app/page'
+import { CANDID_PROFILE_URL } from '../../src/lib/organization'
 
 describe('Root page (app/page.tsx)', () => {
   it('should render without crashing', () => {
@@ -16,8 +10,22 @@ describe('Root page (app/page.tsx)', () => {
     expect(container).toBeTruthy()
   })
 
-  it('should render the HomePage component', () => {
-    const { getByTestId } = render(<RootPage />)
-    expect(getByTestId('home-page')).toBeInTheDocument()
+  it('should render the main content area', () => {
+    render(<RootPage />)
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  it('should display the organization name', () => {
+    render(<RootPage />)
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Friends of Pack 362 Inc.' })
+    ).toBeInTheDocument()
+  })
+
+  it('should link to the Candid nonprofit profile', () => {
+    render(<RootPage />)
+    const candidLinks = screen.getAllByRole('link', { name: /candid profile/i })
+    expect(candidLinks.length).toBeGreaterThan(0)
+    expect(candidLinks[0]).toHaveAttribute('href', CANDID_PROFILE_URL)
   })
 })

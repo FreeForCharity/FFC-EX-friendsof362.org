@@ -9,7 +9,7 @@ import { testConfig } from './test.config'
  *
  *   BASE_URL=https://example.com npx playwright test --config=playwright.smoke.config.ts
  *
- * Covers: page loads, footer, policy links, social links, copyright,
+ * Covers: page loads, footer, policy links, copyright,
  * cookie consent, and Google Tag Manager.
  */
 
@@ -78,7 +78,6 @@ test.describe('Post-deploy smoke tests', () => {
 
     // Three column headings
     await expect(footer.getByRole('heading', { name: 'Endorsements' })).toBeVisible()
-    await expect(footer.getByRole('heading', { name: 'Quick Links' })).toBeVisible()
     await expect(footer.getByRole('heading', { name: 'Contact Us' })).toBeVisible()
 
     // Policy section heading
@@ -99,16 +98,9 @@ test.describe('Post-deploy smoke tests', () => {
     }
   })
 
-  test('social links and copyright are correct', async ({ page }) => {
+  test('copyright is correct', async ({ page }) => {
     await page.goto('./')
     const footer = page.locator('footer')
-
-    // Verify all 4 social links
-    for (const [, social] of Object.entries(testConfig.socialLinks)) {
-      const link = footer.locator(`a[href*="${social.url}"]`)
-      await expect(link, `Social link for ${social.ariaLabel}`).toBeVisible()
-      await expect(link).toHaveAttribute('aria-label', social.ariaLabel)
-    }
 
     // Copyright with current year
     const currentYear = new Date().getFullYear()

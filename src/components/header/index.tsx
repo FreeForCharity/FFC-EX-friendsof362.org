@@ -20,13 +20,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('')
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
-      { label: 'Home', path: '/#hero' },
-      { label: 'Team', path: '/#team' },
-    ],
-    []
-  )
+  const menuItems: MenuItem[] = useMemo(() => [{ label: 'Home', path: '/#hero' }], [])
 
   const sections = useMemo(
     () =>
