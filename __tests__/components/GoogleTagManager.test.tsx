@@ -14,7 +14,7 @@ describe('GoogleTagManagerNoScript component', () => {
 
   it('should contain an iframe pointing to GTM', () => {
     expect(html).toContain('googletagmanager.com/ns.html')
-    expect(html).toContain('GTM-TQ5H8HPR')
+    expect(html).toContain('GTM-NQCNLS5B')
   })
 
   it('should have the iframe hidden', () => {
