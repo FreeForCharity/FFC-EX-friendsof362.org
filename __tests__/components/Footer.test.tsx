@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import Footer from '../../src/components/footer'
+import { CONTACT_EMAIL, MAILING_ADDRESS } from '../../src/lib/organization'
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations)
@@ -18,9 +19,9 @@ describe('Footer component', () => {
     expect(screen.getByText('Endorsements')).toBeInTheDocument()
   })
 
-  it('should display Quick Links section', () => {
+  it('should not display Quick Links section', () => {
     render(<Footer />)
-    expect(screen.getByText('Quick Links')).toBeInTheDocument()
+    expect(screen.queryByText('Quick Links')).not.toBeInTheDocument()
   })
 
   it('should display Contact Us section with contact information', () => {
@@ -28,10 +29,12 @@ describe('Footer component', () => {
     expect(screen.getByText('Contact Us')).toBeInTheDocument()
   })
 
-  it('should have social media links', () => {
+  it('should not display social media icons', () => {
     render(<Footer />)
-    const links = screen.getAllByRole('link')
-    expect(links.length).toBeGreaterThan(0)
+    expect(screen.queryByLabelText('Facebook')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('X (Twitter)')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('LinkedIn')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('GitHub')).not.toBeInTheDocument()
   })
 
   it('should display the current year in copyright', () => {
@@ -40,49 +43,37 @@ describe('Footer component', () => {
     expect(screen.getByText(new RegExp(currentYear.toString()))).toBeInTheDocument()
   })
 
-  it('should have GuideStar profile link', () => {
+  it('should have Candid profile link', () => {
     render(<Footer />)
-    const guidestarLink = screen.getByText(/GuideStar Profile/i)
-    expect(guidestarLink).toBeInTheDocument()
+    const candidLink = screen.getByText(/Candid Profile/i)
+    expect(candidLink).toBeInTheDocument()
+    expect(candidLink.closest('a')).toHaveAttribute(
+      'href',
+      'https://app.candid.org/profile/15928934/friends-of-pack-362-inc-92-3233855'
+    )
   })
 
   it('should have email contact link', () => {
     render(<Footer />)
-    const links = screen.getAllByRole('link')
-    const emailLink = links.find((link) => link.getAttribute('href')?.includes('mailto:'))
-    expect(emailLink).toBeDefined()
+    const emailLink = screen.getByRole('link', { name: CONTACT_EMAIL })
+    expect(emailLink).toHaveAttribute('href', `mailto:${CONTACT_EMAIL}`)
   })
 
   it('should display the EIN number', () => {
     render(<Footer />)
-    expect(screen.getByText(/46-2471893/)).toBeInTheDocument()
+    expect(screen.getByText(/92-3233855/)).toBeInTheDocument()
   })
 
-  it('should have phone contact link', () => {
+  it('should not have a phone contact link', () => {
     render(<Footer />)
     const links = screen.getAllByRole('link')
     const phoneLink = links.find((link) => link.getAttribute('href')?.includes('tel:'))
-    expect(phoneLink).toBeDefined()
+    expect(phoneLink).toBeUndefined()
   })
 
   it('should display the Free For Charity Policy section', () => {
     render(<Footer />)
     expect(screen.getByText('Free For Charity Policy')).toBeInTheDocument()
-  })
-
-  it('should have all social media links with correct aria-labels', () => {
-    render(<Footer />)
-    expect(screen.getByLabelText('Facebook')).toBeInTheDocument()
-    expect(screen.getByLabelText('X (Twitter)')).toBeInTheDocument()
-    expect(screen.getByLabelText('LinkedIn')).toBeInTheDocument()
-    expect(screen.getByLabelText('GitHub')).toBeInTheDocument()
-  })
-
-  it('should have social media links open in new tabs', () => {
-    render(<Footer />)
-    const fbLink = screen.getByLabelText('Facebook')
-    expect(fbLink).toHaveAttribute('target', '_blank')
-    expect(fbLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
   it('should have policy links with correct hrefs', () => {
@@ -100,15 +91,27 @@ describe('Footer component', () => {
     }
   })
 
-  it('should have GuideStar image with alt text', () => {
+  it('should have Candid seal image with alt text', () => {
     render(<Footer />)
-    expect(screen.getByAltText('GuideStar Platinum Seal of Transparency')).toBeInTheDocument()
+    const seal = screen.getByAltText('Candid Gold Seal of Transparency')
+    expect(seal).toBeInTheDocument()
+    expect(seal).toHaveAttribute(
+      'src',
+      'https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/15928934/svg'
+    )
   })
 
-  it('should have Google Maps links for addresses', () => {
+  it('should have Google Maps link for mailing address', () => {
     render(<Footer />)
-    expect(screen.getByLabelText('Open main address in Google Maps')).toBeInTheDocument()
-    expect(screen.getByLabelText('Open PA office address in Google Maps')).toBeInTheDocument()
+    const mapsLink = screen.getByLabelText('Open mailing address in Google Maps')
+    expect(mapsLink).toBeInTheDocument()
+    expect(mapsLink).toHaveAttribute(
+      'href',
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAILING_ADDRESS)}`
+    )
+    const addressText = mapsLink.querySelector('#aria-font')
+    expect(addressText?.textContent).toContain('PO Box 103')
+    expect(addressText?.textContent).toContain('East Meadow, NY 11554')
   })
 
   it('should display freeforcharity.org link in copyright bar', () => {

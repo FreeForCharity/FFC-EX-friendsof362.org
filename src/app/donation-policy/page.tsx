@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ORGANIZATION_EIN, ORGANIZATION_NAME } from '@/lib/organization'
 
 export const metadata: Metadata = {
   title: 'Donation Policy | Free For Charity',
@@ -22,8 +23,8 @@ export default function DonationPolicy() {
             Tax Deductibility
           </h2>
           <p>
-            Free For Charity is a qualified 501(c)(3) nonprofit organization (EIN: 46-2471893).
-            Donations are tax-deductible to the full extent allowed by law.
+            {ORGANIZATION_NAME} is a qualified 501(c)(3) nonprofit organization (EIN:{' '}
+            {ORGANIZATION_EIN}). Donations are tax-deductible to the full extent allowed by law.
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
